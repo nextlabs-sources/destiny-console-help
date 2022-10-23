@@ -1,0 +1,50 @@
+<project xmlns:jacoco="antlib:org.jacoco.ant" name="Control Center Console"
+	default="build">
+
+	<property environment="env" />
+
+	<property name="nlbuildroot" value="${basedir}/.." />
+
+	<property name="build.dir" value="${nlbuildroot}/build" />
+	<property name="build.module.dir" value="${nlbuildroot}/cc-help" />
+
+	<property name="package.name" value="cc-help" />
+	<property name="product.name" value="Control Center Console Help" />
+	<property name="build.version" value="1.0" />
+	<property name="build.number" value="${env.BUILD_NUMBER}" />
+
+	<!-- Global tasks -->
+	<tstamp>
+		<format property="local.now" pattern="EEE, d MMM yyyy HH:mm:ss Z" />
+		<format property="build.date" pattern="yyyMMdHHmm" />
+	</tstamp>
+
+	<target name="build" depends="clean, setup-war" />
+
+	<target name="clean" description="Delete all artifacts in target folder">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${build.dir}" />
+		</delete>
+	</target>
+
+	<target name="setup-war">
+		<echo>Creating war file: ${package.name}.war</echo>
+
+		<mkdir dir="${build.dir}" />
+		<war
+			destfile="${build.dir}/${package.name}.war"
+			basedir="${build.module.dir}"
+			duplicate="add"
+			needxmlfile="false">
+			<manifest>
+				<attribute name="Implementation-Vendor" value="NextLabs, Inc." />
+				<attribute name="Implementation-Title" value="${product.name}" />
+				<attribute name="Implementation-Version" value="${build.version} (${build.number})" />
+				<attribute name="Implementation-Time" value="${local.now}" />
+			</manifest>
+		</war>
+
+		<echo>Package created. Time : ${local.now}</echo>
+	</target>
+
+</project>
